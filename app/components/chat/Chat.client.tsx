@@ -134,7 +134,7 @@ export const ChatImpl = memo(
       (project) => project.id === supabaseConn.selectedProjectId,
     );
     const supabaseAlert = useStore(workbenchStore.supabaseAlert);
-    const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
+    const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled, autoMode, setAutoMode } = useSettings();
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
       return savedModel || DEFAULT_MODEL;
@@ -250,6 +250,40 @@ export const ChatImpl = memo(
         storeMessageHistory,
       });
     }, [messages, isLoading, parseMessages]);
+
+    useEffect(() => {
+      if (!autoMode || isLoading || messages.length === 0) {
+        return;
+      }
+
+      const lastIndex = messages.length - 1;
+      const lastMessage = messages[lastIndex];
+
+      if (lastMessage.role !== 'assistant') {
+        return;
+      }
+
+      const html = parsedMessages[lastIndex];
+
+      if (!html) {
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.innerHTML = html;
+
+      const button =
+        div.querySelector('button[data-type="implement"]') ||
+        div.querySelector('button[data-type="message"]');
+
+      const msg = button?.getAttribute('data-message');
+
+      if (msg) {
+        sendMessage({} as any, msg);
+      } else {
+        setAutoMode(false);
+      }
+    }, [parsedMessages, messages, autoMode, isLoading]);
 
     const scrollTextArea = () => {
       const textarea = textareaRef.current;
@@ -574,6 +608,8 @@ export const ChatImpl = memo(
         data={chatData}
         chatMode={chatMode}
         setChatMode={setChatMode}
+        autoMode={autoMode}
+        setAutoMode={setAutoMode}
         append={append}
         designScheme={designScheme}
         setDesignScheme={setDesignScheme}

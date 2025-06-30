@@ -74,6 +74,8 @@ interface BaseChatProps {
   actionRunner?: ActionRunner;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
+  autoMode?: boolean;
+  setAutoMode?: (enabled: boolean) => void;
   append?: (message: Message) => void;
   designScheme?: DesignScheme;
   setDesignScheme?: (scheme: DesignScheme) => void;
@@ -119,6 +121,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       actionRunner,
       chatMode,
       setChatMode,
+      autoMode = false,
+      setAutoMode,
       append,
       designScheme,
       setDesignScheme,
@@ -453,6 +457,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   handleFileUpload={handleFileUpload}
                   chatMode={chatMode}
                   setChatMode={setChatMode}
+                  autoMode={autoMode}
+                  setAutoMode={setAutoMode}
                   designScheme={designScheme}
                   setDesignScheme={setDesignScheme}
                   selectedElement={selectedElement}

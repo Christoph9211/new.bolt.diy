@@ -15,7 +15,9 @@ import {
   updateAutoSelectTemplate,
   updateContextOptimization,
   updateEventLogs,
+  updateAutoMode,
   updatePromptId,
+  autoModeStore,
 } from '~/lib/stores/settings';
 import { useCallback, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -59,6 +61,8 @@ export interface UseSettingsReturn {
   setAutoSelectTemplate: (enabled: boolean) => void;
   contextOptimizationEnabled: boolean;
   enableContextOptimization: (enabled: boolean) => void;
+  autoMode: boolean;
+  setAutoMode: (enabled: boolean) => void;
 
   // Tab configuration
   tabConfiguration: TabWindowConfig;
@@ -78,6 +82,7 @@ export function useSettings(): UseSettingsReturn {
   const promptId = useStore(promptStore);
   const isLatestBranch = useStore(latestBranchStore);
   const autoSelectTemplate = useStore(autoSelectStarterTemplate);
+  const autoMode = useStore(autoModeStore);
   const [activeProviders, setActiveProviders] = useState<ProviderInfo[]>([]);
   const contextOptimizationEnabled = useStore(enableContextOptimizationStore);
   const tabConfiguration = useStore(tabConfigurationStore);
@@ -145,6 +150,11 @@ export function useSettings(): UseSettingsReturn {
     logStore.logSystem(`Context optimization ${enabled ? 'enabled' : 'disabled'}`);
   }, []);
 
+  const setAutoMode = useCallback((enabled: boolean) => {
+    updateAutoMode(enabled);
+    logStore.logSystem(`Auto mode ${enabled ? 'enabled' : 'disabled'}`);
+  }, []);
+
   const setTheme = useCallback(
     (theme: Settings['theme']) => {
       saveSettings({ theme });
@@ -207,5 +217,7 @@ export function useSettings(): UseSettingsReturn {
     tabConfiguration,
     updateTabConfiguration: updateTabConfig,
     resetTabConfiguration: resetTabConfig,
+    autoMode,
+    setAutoMode,
   };
 }
