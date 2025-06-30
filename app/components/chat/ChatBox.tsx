@@ -56,6 +56,8 @@ interface ChatBoxProps {
   enhancePrompt?: (() => void) | undefined;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
+  autoMode: boolean;
+  setAutoMode?: (enabled: boolean) => void;
   designScheme?: DesignScheme;
   setDesignScheme?: (scheme: DesignScheme) => void;
   selectedElement?: ElementInfo | null;
@@ -302,6 +304,19 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
               </IconButton>
             )}
+            <IconButton
+              title="Auto Mode"
+              className={classNames(
+                'transition-all flex items-center gap-1 px-1.5',
+                props.autoMode
+                  ? '!bg-bolt-elements-item-backgroundAccent !text-bolt-elements-item-contentAccent'
+                  : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault',
+              )}
+              onClick={() => props.setAutoMode?.(!props.autoMode)}
+            >
+              <div className="i-ph:robot text-xl" />
+              {props.autoMode ? <span>Auto</span> : <span />}
+            </IconButton>
             <IconButton
               title="Model Settings"
               className={classNames('transition-all flex items-center gap-1', {

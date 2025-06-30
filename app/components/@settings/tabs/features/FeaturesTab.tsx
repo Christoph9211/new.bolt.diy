@@ -111,10 +111,12 @@ export default function FeaturesTab() {
     isLatestBranch,
     contextOptimizationEnabled,
     eventLogs,
+    autoMode,
     setAutoSelectTemplate,
     enableLatestBranch,
     enableContextOptimization,
     setEventLogs,
+    setAutoMode,
     setPromptId,
     promptId,
   } = useSettings();
@@ -140,6 +142,10 @@ export default function FeaturesTab() {
 
     if (eventLogs === undefined) {
       setEventLogs(true); // Default: ON - Enable event logging
+    }
+
+    if (autoMode === undefined) {
+      setAutoMode(false);
     }
   }, []); // Only run once on component mount
 
@@ -170,11 +176,17 @@ export default function FeaturesTab() {
           break;
         }
 
+        case 'autoMode': {
+          setAutoMode(enabled);
+          toast.success(`Auto mode ${enabled ? 'enabled' : 'disabled'}`);
+          break;
+        }
+
         default:
           break;
       }
     },
-    [enableLatestBranch, setAutoSelectTemplate, enableContextOptimization, setEventLogs],
+    [enableLatestBranch, setAutoSelectTemplate, enableContextOptimization, setEventLogs, setAutoMode],
   );
 
   const features = {
@@ -210,6 +222,14 @@ export default function FeaturesTab() {
         icon: 'i-ph:list-bullets',
         enabled: eventLogs,
         tooltip: 'Enabled by default to record detailed logs of system events and user actions',
+      },
+      {
+        id: 'autoMode',
+        title: 'Auto Mode',
+        description: 'LLM continues automatically',
+        icon: 'i-ph:robot',
+        enabled: autoMode,
+        tooltip: 'Automatically run recommended quick actions',
       },
     ],
     beta: [],
